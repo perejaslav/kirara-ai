@@ -1,4 +1,4 @@
-# 第一阶段：构建wheel包
+# Этап 1: сборка wheel-пакета
 FROM python:3.11-slim AS builder
 
 WORKDIR /build
@@ -6,15 +6,15 @@ COPY . .
 RUN python -m pip install build && \
     python -m build
 
-# 第二阶段：运行环境
+# Этап 2: окружение для запуска
 FROM python:3.11-slim-bullseye
 
 ENV DEBIAN_FRONTEND=noninteractive
 
-# 复制字体文件
+# Шрифт для рендера изображений
 COPY ./data/fonts/sarasa-mono-sc-regular.ttf /usr/share/fonts/
 
-# 安装系统依赖
+# Системные зависимости
 RUN apt-get -yqq update && \
     apt-get -yqq install --no-install-recommends \
         wkhtmltopdf \
@@ -27,13 +27,11 @@ RUN apt-get -yqq update && \
     apt-get -yq purge --auto-remove -o APT::AutoRemove::RecommendsImportant=false && \
     rm -rf /var/lib/apt/lists/*
 
-# 创建应用目录
 WORKDIR /app
 
-# 复制第一阶段构建的wheel包并安装
 COPY --from=builder /build/dist/*.whl /app/
 
-# 下载Web UI并安装依赖
+# Скачивание WebUI с международного реестра npmjs (CN-зеркала удалены)
 RUN PACKAGE_INFO=$(curl -s https://registry.npmjs.org/kirara-ai-webui) && \
     LATEST_VERSION=$(printf %s $PACKAGE_INFO | jq -r '.["dist-tags"].latest') && \
     TARBALL_URL=$(printf %s $PACKAGE_INFO | jq -r --arg VERSION "$LATEST_VERSION" '.versions[$VERSION].dist.tarball') && \
@@ -47,10 +45,8 @@ RUN PACKAGE_INFO=$(curl -s https://registry.npmjs.org/kirara-ai-webui) && \
     pip cache purge && \
     rm *.whl
 
-# 移除不再需要的包
 RUN apt-get -yqq remove --purge curl jq unzip
 
-# 复制应用代码
 COPY ./docker/start.sh /app/docker/
 COPY ./data /tmp/data
 EXPOSE 8080
