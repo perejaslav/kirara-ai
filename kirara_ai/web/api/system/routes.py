@@ -249,17 +249,18 @@ async def get_system_status():
 @system_bp.route("/check-update", methods=["GET"])
 @require_auth
 async def check_update():
-    """检查系统更新"""
+    """Проверка обновлений."""
     config: GlobalConfig = g.container.resolve(GlobalConfig)
     npm_registry = config.update.npm_registry
-    
+
     current_backend_version = get_installed_version()
-    latest_backend_version, backend_download_url = await get_latest_pypi_version("kirara-ai")
-    
-    # 获取前端最新版本信息，但不判断是否需要更新
+    # Сначала пробуем kirara-ru, затем fallback на kirara-ai для совместимости
+    latest_backend_version, backend_download_url = await get_latest_pypi_version("kirara-ru")
+    if latest_backend_version == "0.0.0":
+        latest_backend_version, backend_download_url = await get_latest_pypi_version("kirara-ai")
+
     latest_webui_version, webui_download_url = await get_latest_npm_version("kirara-ai-webui", npm_registry)
-    
-    # 只判断后端是否需要更新
+
     backend_update_available = version.parse(latest_backend_version) > version.parse(current_backend_version)
     
     return UpdateCheckResponse(
