@@ -54,8 +54,8 @@ dependencies = [
     "pytz",
     "sqlalchemy",
     "alembic",
-    "mcp",
-    "pygls",
+    "mcp>=1.0.0,<2.0.0",
+    "pygls>=1.0,<2.0",
     "jedi",
     "pyflakes",
 ]

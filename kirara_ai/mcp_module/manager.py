@@ -5,8 +5,13 @@ import asyncio
 from functools import partial
 from typing import Dict, NamedTuple, Optional, Tuple
 
-from mcp import McpError, types
-from mcp.shared.session import RequestResponder
+try:
+    from mcp import McpError  # type: ignore
+except ImportError:
+    from mcp import MCPError as McpError  # type: ignore
+
+from mcp import types  # type: ignore
+from mcp.shared.session import RequestResponder  # type: ignore
 
 from kirara_ai.config.global_config import GlobalConfig, MCPServerConfig
 from kirara_ai.ioc.container import DependencyContainer
