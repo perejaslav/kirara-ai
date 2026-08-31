@@ -1,5 +1,5 @@
-name: 聊天 - 深度思考
-description: DeepSeek 思考模型聊天，隐藏 <think> 标签内容
+name: Глубокое размышление
+description: Чат с reasoning-моделью — скрывает содержимое <think>
 blocks:
   - type: internal:get_message
     name: get_message

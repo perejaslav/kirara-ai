@@ -1,5 +1,5 @@
-name: 聊天 - 原生多模态对话
-description: 基于原生多模态能力的图文对话，适用于本身支持图片输入/回答的模型，在读取记忆时会恢复原来的媒体资源
+name: Мультимодальный чат
+description: Диалог с поддержкой изображений — восстанавливает медиа из памяти
 blocks:
   - type: internal:get_message
     name: get_message
